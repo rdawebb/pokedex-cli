@@ -5,7 +5,7 @@ import (
 )
 
 func fetchLocations(url string) error {
-	areas, err := cfg.pokeapiClient.FetchLocations(url)
+	areas, err := cfg.pokeapiClient.FetchLocations(url, cfg.cache)
 	if err != nil {
 		return err
 	}
@@ -22,7 +22,7 @@ func fetchLocations(url string) error {
 	return nil
 }
 
-func commandMap() error {
+func commandMap(cfg *config) error {
 	url := cfg.pokeapiClient.GetNextUrl()
 	if url == "" {
 		url = cfg.pokeapiClient.GetBaseUrl()
@@ -30,7 +30,7 @@ func commandMap() error {
 	return fetchLocations(url)
 }
 
-func commandMapb() error {
+func commandMapb(cfg *config) error {
 	previousUrl := cfg.pokeapiClient.GetPreviousUrl()
 	if previousUrl == "" {
 		fmt.Println("You're on the first page.")

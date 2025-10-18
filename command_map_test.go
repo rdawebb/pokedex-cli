@@ -30,7 +30,7 @@ func TestMapCommand(t *testing.T) {
 	cfg.pokeapiClient.Reset()
 
 	output := captureOutput(func() {
-		if err := commandMap(); err != nil {
+		if err := commandMap(cfg); err != nil {
 			t.Errorf("Error executing map command: %v", err)
 		}
 	})
@@ -44,16 +44,16 @@ func TestMapbCommand(t *testing.T) {
 	cfg.pokeapiClient.Reset()
 
 	// Call commandMap twice to get to the second page
-	if err := commandMap(); err != nil {
+	if err := commandMap(cfg); err != nil {
 		t.Errorf("Error executing map command: %v", err)
 	}
 
-	if err := commandMap(); err != nil {
+	if err := commandMap(cfg); err != nil {
 		t.Errorf("Error executing map command: %v", err)
 	}
 
 	output := captureOutput(func() {
-		if err := commandMapb(); err != nil {
+		if err := commandMapb(cfg); err != nil {
 			t.Errorf("Error executing mapb command: %v", err)
 		}
 	})
@@ -67,7 +67,7 @@ func TestMapbCommandFirstPage(t *testing.T) {
 	cfg.pokeapiClient.Reset()
 
 	output := captureOutput(func() {
-		if err := commandMapb(); err != nil {
+		if err := commandMapb(cfg); err != nil {
 			t.Errorf("Error executing mapb command: %v", err)
 		}
 	})

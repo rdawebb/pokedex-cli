@@ -7,16 +7,18 @@ import (
 	"strings"
 
 	"github.com/rdawebb/pokedex-cli/internal/pokeapi"
+	"github.com/rdawebb/pokedex-cli/internal/pokecache"
 )
 
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
 }
 
 type config struct {
 	pokeapiClient *pokeapi.Client
+	cache         *pokecache.Cache
 }
 
 var cfg *config
@@ -24,6 +26,7 @@ var cfg *config
 func init() {
 	cfg = &config{}
 	cfg.pokeapiClient = pokeapi.NewClient()
+	cfg.cache = pokecache.NewCache()
 }
 
 func getCommands() map[string]cliCommand {
@@ -51,7 +54,7 @@ func getCommands() map[string]cliCommand {
 	}
 }
 
-func startRepl() {
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -67,7 +70,7 @@ func startRepl() {
 			command := words[0]
 
 			if cmd, exists := getCommands()[command]; exists {
-				if err := cmd.callback(); err != nil {
+				if err := cmd.callback(cfg); err != nil {
 					fmt.Println("Error executing command:", err)
 				}
 			} else {

@@ -6,8 +6,9 @@ import (
 )
 
 func TestHelpCommand(t *testing.T) {
+		cfg := &config{}
 		output := captureOutput(func() {
-			if err := commandHelp(); err != nil {
+			if err := commandHelp(cfg); err != nil {
 				t.Errorf("Error executing help command: %v", err)
 			}
 		})

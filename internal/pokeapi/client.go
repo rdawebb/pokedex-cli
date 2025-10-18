@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"github.com/rdawebb/pokedex-cli/internal/pokecache"
 )
 
 type LocationArea struct {
@@ -23,7 +25,6 @@ type Client struct {
 	nextUrl    string
 	previousUrl string
 }
-
 func NewClient() *Client {
 	return &Client{
 		baseUrl: "https://pokeapi.co/api/v2/location-area?limit=20",
@@ -35,7 +36,16 @@ func (client *Client) Reset() {
 		client.previousUrl = ""
 }
 
-func (client *Client) FetchLocations(url string) ([]LocationArea, error) {
+func (client *Client) FetchLocations(url string, cache *pokecache.Cache) ([]LocationArea, error) {
+	if data, ok := cache.Get(url); ok {
+		var response LocationAreaResponse
+		if err := json.Unmarshal(data, &response); err == nil {
+			client.nextUrl = response.Next
+			client.previousUrl = response.Previous
+			return response.Results, nil
+		}
+	}
+
 	result, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("failed to fetch location areas: %w", err)
@@ -53,6 +63,10 @@ func (client *Client) FetchLocations(url string) ([]LocationArea, error) {
 
 	client.nextUrl = response.Next
 	client.previousUrl = response.Previous
+
+	if data, err := json.Marshal(response); err == nil {
+		cache.Add(url, data)
+	}
 
 	return response.Results, nil
 }
