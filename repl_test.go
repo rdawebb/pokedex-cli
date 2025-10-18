@@ -1,7 +1,7 @@
 package main
 
 import (
-    "testing"
+	"testing"
 )
 
 func TestCleanInput(t *testing.T) {

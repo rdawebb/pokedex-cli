@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/rdawebb/pokedex-cli/internal/pokeapi"
 )
 
 type cliCommand struct {
@@ -13,17 +15,38 @@ type cliCommand struct {
 	callback    func() error
 }
 
+type config struct {
+	pokeapiClient *pokeapi.Client
+}
+
+var cfg *config
+
+func init() {
+	cfg = &config{}
+	cfg.pokeapiClient = pokeapi.NewClient()
+}
+
 func getCommands() map[string]cliCommand {
 	return map[string]cliCommand{
-		"exit": {
-			name:        "exit",
-			description: "Exit the Pokedex",
-			callback:    commandExit,
-		},
 		"help": {
 			name:        "help",
 			description: "Displays a help message",
 			callback:    commandHelp,
+		},
+		"map": {
+			name:        "map",
+			description: "Displays a list of 20 location areas",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Displays a list of the previous 20 location areas",
+			callback:    commandMapb,
+		},
+		"exit": {
+			name:        "exit",
+			description: "Exit the Pokedex",
+			callback:    commandExit,
 		},
 	}
 }
