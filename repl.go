@@ -19,6 +19,7 @@ type cliCommand struct {
 type config struct {
 	pokeapiClient *pokeapi.Client
 	cache         *pokecache.Cache
+	caughtPokemon map[string]pokeapi.Pokemon
 }
 
 var cfg *config
@@ -27,6 +28,7 @@ func init() {
 	cfg = &config{}
 	cfg.pokeapiClient = pokeapi.NewClient()
 	cfg.cache = pokecache.NewCache()
+	cfg.caughtPokemon = make(map[string]pokeapi.Pokemon)
 }
 
 func getCommands() map[string]cliCommand {
@@ -50,6 +52,21 @@ func getCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "Explore a specific location area",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Catch a Pokemon by name or ID",
+			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect",
+			description: "Inspect a caught Pokemon",
+			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "List all caught Pokemon",
+			callback:    commandPokedex,
 		},
 		"exit": {
 			name:        "exit",
